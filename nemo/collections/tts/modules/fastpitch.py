@@ -176,7 +176,7 @@ class FastPitchModule(NeuralModule):
     @property
     def output_types(self):
         return {
-            "spect": NeuralType(('B', 'D', 'T'), MelSpectrogramType()),
+            "spect": NeuralType(('B', 'T', 'D'), MelSpectrogramType()),
             "spect_lens": NeuralType(('B'), SequenceToSequenceAlignmentType()),
             "spect_mask": NeuralType(('B', 'D', 'T'), MaskType()),
             "durs_predicted": NeuralType(('B', 'T'), TokenDurationType()),
@@ -225,4 +225,4 @@ class FastPitchModule(NeuralModule):
         # Output FFT
         dec_out, dec_mask = self.decoder(input=len_regulated, seq_lens=dec_lens)
         spect = self.proj(dec_out)
-        return (spect, dec_lens, dec_mask, durs_predicted, log_durs_predicted, pitch_predicted)
+        return (spect.transpose(0,2,1), dec_lens, dec_mask, durs_predicted, log_durs_predicted, pitch_predicted)

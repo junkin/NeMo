@@ -231,7 +231,7 @@ class Generator(NeuralModule):
     @property
     def input_types(self):
         return {
-            "x": NeuralType(('B', 'D', 'T'), MelSpectrogramType()),
+            "x": NeuralType(('B', 'T', 'D'), MelSpectrogramType()),
         }
 
     @property
@@ -242,7 +242,7 @@ class Generator(NeuralModule):
 
     @typecheck()
     def forward(self, x):
-        x = self.conv_pre(x)
+        x = self.conv_pre(x.transpose(0,2,1))
         for upsample_layer, resblock_group in zip(self.ups, self.resblocks):
             x = F.leaky_relu(x, self.lrelu_slope)
             x = upsample_layer(x)

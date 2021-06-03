@@ -117,6 +117,7 @@ class WaveGlowModule(NeuralModule, Exportable):
             raise ValueError(f"{self} has self.training set to True but self.OperationMode was not set to training")
         if not self.training and self.mode == OperationMode.training:
             raise ValueError(f"{self} has self.training set to False but self.OperationMode was set to training")
+        spec = spec.transpose(0,2,1)
 
         audio_pred = torch.zeros((1, 1))
         if audio is not None and self.mode != OperationMode.infer:
@@ -135,7 +136,7 @@ class WaveGlowModule(NeuralModule, Exportable):
     @property
     def input_types(self):
         return {
-            "spec": NeuralType(('B', 'D', 'T'), MelSpectrogramType()),
+            "spec": NeuralType(('B', 'T', 'D'), MelSpectrogramType()),
             "z": NeuralType(('B', 'D', 'T'), MelSpectrogramType()),
             "audio": NeuralType(('B', 'T'), AudioSignal(), optional=True),
             "run_inverse": NeuralType(elements_type=IntType(), optional=True),

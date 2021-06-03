@@ -113,6 +113,7 @@ class SqueezeWaveModule(NeuralModule):
         if not self.training and self.mode == OperationMode.training:
             raise ValueError(f"{self} has self.training set to False but self.OperationMode was set to training")
 
+        spec = spec.transpose(0,2,1)
         audio_pred = torch.zeros((1, 1))
         if audio is not None and self.mode != OperationMode.infer:
             # audio_to_normal_dist is used to calculate loss so only run this in train or val model
@@ -130,7 +131,7 @@ class SqueezeWaveModule(NeuralModule):
     @property
     def input_types(self):
         return {
-            "spec": NeuralType(('B', 'D', 'T'), MelSpectrogramType()),
+            "spec": NeuralType(('B', 'T', 'D'), MelSpectrogramType()),
             "audio": NeuralType(('B', 'T'), AudioSignal(), optional=True),
             "run_inverse": NeuralType(elements_type=IntType(), optional=True),
             "sigma": NeuralType(optional=True),

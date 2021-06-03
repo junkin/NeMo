@@ -189,7 +189,7 @@ class Decoder(NeuralModule):
     @property
     def output_types(self):
         output_dict = {
-            "mel_outputs": NeuralType(('B', 'D', 'T'), MelSpectrogramType()),
+            "mel_outputs": NeuralType(('B', 'T', 'D'), MelSpectrogramType()),
             "gate_outputs": NeuralType(('B', 'T'), LogitsType()),
             "alignments": NeuralType(('B', 'T', 'T'), SequenceToSequenceAlignmentType()),
         }
@@ -429,7 +429,7 @@ class Postnet(NeuralModule):
     @property
     def output_types(self):
         return {
-            "mel_spec": NeuralType(('B', 'D', 'T'), MelSpectrogramType()),
+            "mel_spec": NeuralType(('B', 'T', 'D'), MelSpectrogramType()),
         }
 
     @typecheck()
@@ -439,4 +439,4 @@ class Postnet(NeuralModule):
             mel_spec_out = F.dropout(torch.tanh(self.convolutions[i](mel_spec_out)), self.p_dropout, self.training)
         mel_spec_out = F.dropout(self.convolutions[-1](mel_spec_out), self.p_dropout, self.training)
 
-        return mel_spec + mel_spec_out
+        return (mel_spec + mel_spec_out).transpose(0,2,1)

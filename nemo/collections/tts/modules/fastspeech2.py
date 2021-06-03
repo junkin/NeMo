@@ -311,4 +311,4 @@ class MelSpecDecoder(NeuralModule):
     def forward(self, *, decoder_input, lengths):
         decoder_out, _ = self.decoder(decoder_input, lengths)
         mel_out = self.linear(decoder_out)
-        return mel_out
+        return mel_ou

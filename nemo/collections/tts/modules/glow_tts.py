@@ -248,7 +248,7 @@ class FlowSpecDecoder(NeuralModule):
     @property
     def input_types(self):
         return {
-            "spect": NeuralType(('B', 'D', 'T'), MelSpectrogramType()),
+            "spect": NeuralType(('B', 'T', 'D'), MelSpectrogramType()),
             "spect_mask": NeuralType(('B', 'D', 'T'), MaskType()),
             "speaker_embeddings": NeuralType(('B', 'D'), AcousticEncodedRepresentation(), optional=True),
             "reverse": NeuralType(elements_type=IntType(), optional=True),
@@ -270,7 +270,7 @@ class FlowSpecDecoder(NeuralModule):
             flows = reversed(self.flows)
             logdet_tot = None
 
-        x = spect
+        x = spect.transpose(0,2,1)
         x_mask = spect_mask
 
         if self.n_sqz > 1:

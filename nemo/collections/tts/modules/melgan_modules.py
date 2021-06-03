@@ -198,7 +198,7 @@ class MelGANGenerator(NeuralModule):
     @property
     def input_types(self):
         return {
-            "spec": NeuralType(('B', 'D', 'T'), MelSpectrogramType()),
+            "spec": NeuralType(('B', 'T', 'D'), MelSpectrogramType()),
         }
 
     @property
@@ -218,7 +218,7 @@ class MelGANGenerator(NeuralModule):
             Tensor: Output tensor (B, 1, T ** prod(upsample_scales)).
 
         """
-        return self.melgan(spec)
+        return self.melgan(spec.transpose(0,2,1))
 
     def remove_weight_norm(self):
         """Remove weight normalization module from all of the layers."""
